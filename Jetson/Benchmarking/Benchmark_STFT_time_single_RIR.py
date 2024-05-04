@@ -10,10 +10,12 @@ import matplotlib.pyplot as plt
 import numpy as np
 import librosa
 import sys
+sys.path.append('..')
 import _parseargs as parse
 import scipy
 import torch
 import tensorflow as tf
+import pandas as pd
 
 def RIR_to_gpu(RIR,library):
 
@@ -27,9 +29,9 @@ def RIR_to_gpu(RIR,library):
    
    return RIR_gpu
 
-def main(len,library):
-   fs = 16000
-   print(f"-------ITERATION WITH RIR of length: {len} s-------")
+def main(length,library):
+   fs = 16000.0
+   print(f"-------ITERATION WITH RIR of length: {length} s-------")
    args = parse._parse()
    
    if args.stftsel==True:
@@ -40,11 +42,12 @@ def main(len,library):
    RIR = RIR[:,0]
    
    # Concat the correspoding len of the benchmark
-   RIR = np.concatenate((RIR, np.zeros(int(len*fs)), dtype=np.float32)
+   RIR = np.concatenate((RIR, np.zeros(int(length*fs))), dtype=np.float32)
    
    # Benchmarking variables
    timmings, execution_time = [], []
    reps = 10
+   print(len(RIR))
    RIR_time = len(RIR)/fs
    
    # Events for GPU time measuring
@@ -123,14 +126,14 @@ def main(len,library):
       print("-------SCIPY CALCULATION-------")
       timmings = []
       for _ in range(reps):
-      try:
-         start_time = time.perf_counter()
-         f_scipy,t_scipy,RIR_fft = stft_sp(RIR,fs=16000,nperseg=128,noverlap=64,nfft=256)
-         end_time = time.perf_counter()
-         timmings.append(end_time - start_time)
-         del RIR_fft,f_scipy,t_scipy
-      except MemoryError:
-         gc.collect()
+         try:
+            start_time = time.perf_counter()
+            f_scipy,t_scipy,RIR_fft = stft_sp(RIR,fs=16000,nperseg=128,noverlap=64,nfft=256)
+            end_time = time.perf_counter()
+            timmings.append(end_time - start_time)
+            del RIR_fft,f_scipy,t_scipy
+         except MemoryError:
+            gc.collect()
       execution_time.append([np.mean(timmings[2:])*1e3,np.std(timmings[2:])*1e3])
       del RIR
    
@@ -139,14 +142,14 @@ def main(len,library):
       print("-------LIBROSA CALCULATION-------")
       timmings = []
       for _ in range(reps):
-      try:
-         start_time = time.perf_counter()
-         RIR_fft_lib = stft_lb(RIR,n_fft=256,hop_length=64,win_length=128)
-         end_time = time.perf_counter()
-         timmings.append(end_time - start_time)
-         del RIR_fft_lib
-      except MemoryError:
-         gc.collect()
+         try:
+            start_time = time.perf_counter()
+            RIR_fft_lib = stft_lb(RIR,n_fft=256,hop_length=64,win_length=128)
+            end_time = time.perf_counter()
+            timmings.append(end_time - start_time)
+            del RIR_fft_lib
+         except MemoryError:
+            gc.collect()
       execution_time.append([np.mean(timmings[2:])*1e3,np.std(timmings[2:])*1e3])
       del RIR
    
@@ -207,7 +210,7 @@ def main(len,library):
    #plt.show()
 if __name__ == "__main__":
    
-   lens = [0,0.5,1,2,5,10,20,50]
-   for len in lens:
-   main(len,'Torch')
+   lengths = [0,0.5,1,2,5,10,20,50]
+   for length in lengths:
+      main(length,'Librosa')
 

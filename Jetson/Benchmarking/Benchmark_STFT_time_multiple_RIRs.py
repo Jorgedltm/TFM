@@ -207,4 +207,4 @@ if __name__ == "__main__":
     
     loads = [500,1000,2500,5000,7500,10000,12500,15000,25000,30000]
     for load in loads:
-       main(load,'SciPy')
+       main(load,'Torch')

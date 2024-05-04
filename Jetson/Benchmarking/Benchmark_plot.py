@@ -23,11 +23,11 @@ def main():
     for lib in unique_libs:
         plt.errorbar(nreps_u,mean[np.where(libs == lib)[0]],std[np.where(libs == lib)[0]],fmt='-o',linewidth=2, capsize=4)
     plt.legend(unique_libs)
-    #plt.yscale('log')
+    plt.yscale('log')
     plt.xlabel("Number of RIRs")
     plt.ylabel("Execution time (ms)")
     plt.title("Execution time of STFT vs number of stacked RIRs on Jetson Nano")
-    plt.savefig("Figures/Benchmarking_multiple_RIRs_jn.png")
+    plt.savefig("Figures/Benchmarking_multiple_RIRs_jn_log.png")
     plt.show()
 
 if __name__ == "__main__":

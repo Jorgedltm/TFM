@@ -41,8 +41,10 @@ def play(freq):
     signal_fft = fft(sine_signal[16000:], axis=0)/len(sine_signal[16000:]) # Divide by the length to compensate the decay on amplitude on the calc of FFT.
     recorded = record(sine_signal,fs,[2],[2])
     recorded_fft = fft(recorded[16000:], axis=0)/len(recorded[16000:])
-    gain = np.abs(recorded_fft[duration*freq]) / np.abs(signal_fft[duration*freq])
-    #plt.plot(20*np.log10(2*np.abs(signal_fft)))
+    gain = np.max(np.abs(recorded_fft)) / np.abs(signal_fft[duration*freq])
+    print("Amplitude emitted signal: ",np.abs(signal_fft[duration*freq]))
+    print("Amplitude recorded signal: ",np.abs(recorded_fft[duration*freq])," Max point of the fft: ",np.max(np.abs(recorded_fft))," Freq: ", np.argmax(np.abs(recorded_fft))/duration)
+    #plt.plot(20*np.log10(2*np.abs(recorded_fft)))
     #plt.show()
     return gain
     
@@ -73,7 +75,7 @@ def main():
           angles.append(image_angle)
           gain.append(gain[index])
 
-    gain = 10*np.log10(gain) # Normalize and calc gain in dB
+    gain = 10*np.log10(gain/np.max(gain)) # Normalize and calc gain in dB
 
     # Sort values before plotting and saving
     sorted_indices = np.argsort(angles)

@@ -140,6 +140,7 @@ class UNetVAE:
         self._create_folder_if_it_doesnt_exist(save_folder)
         self._save_parameters(save_folder)
         self._save_weights(save_folder)
+        self.model.save(save_folder)
 
     def load_weights(self, weights_path):
         """

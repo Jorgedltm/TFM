@@ -1,0 +1,2 @@
+n_samples,t_model_inference_avg,batch_size,t_postprocess,t_loss_calc,t_global
+6,0.14065,3,0.24911,0.02080,8.38926

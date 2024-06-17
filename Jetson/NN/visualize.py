@@ -54,7 +54,7 @@ def plot_feature_vs_wav(stft, signal, model, characteristics, path):
     ax[0].plot(time_ax, signal)
     ax[0].set_title('Wav')
 
-    fig.suptitle(f'Model {model}: {characteristics[0]} {characteristics[1]} {characteristics[2]} L{characteristics[3]} M{characteristics[4]}')
+    fig.suptitle(f'Model {model}: {characteristics[0]}')
     plt.savefig(path)
     plt.close(fig)
 
@@ -67,13 +67,13 @@ def plot_feature_vs_feature_wav(signal, stft_true, stft_pred, model, characteris
     ax[0].set_title('Wav true')
 
     stft_true = stft_true
-    if len(stft_true .shape) > 2:
-        assert len(stft_true .shape) == 3
+    if len(stft_true.shape) > 2:
+        assert len(stft_true.shape) == 3
         stft_true = np.squeeze(stft_true , axis=-1)
     stft = stft_true
     height = stft.shape[0]
     width = stft.shape[1]
-    x = np.linspace(0, np.size(stft), num=width, dtype=int)
+    x = np.linspace(0, width*64 , num=width, dtype=int)
     y = range(height)
     ax[1].pcolormesh(x, y, stft)
     ax[1].set_title('Spectogram true')
@@ -85,12 +85,12 @@ def plot_feature_vs_feature_wav(signal, stft_true, stft_pred, model, characteris
     stft = stft_pred
     height = stft.shape[0]
     width = stft.shape[1]
-    x = np.linspace(0, np.size(stft), num=width, dtype=int)
+    x = np.linspace(0, width*64 , num=width, dtype=int)
     y = range(height)
     ax[2].pcolormesh(x, y, stft)
     ax[2].set_title('Spectogram pred')
 
-    fig.suptitle(f'Model {model}: {characteristics[0]} {characteristics[1]} {characteristics[2]} L{characteristics[3]} M{characteristics[4]}')
+    fig.suptitle(f'Model {model}: {characteristics[0]}')
     plt.savefig(path)
     plt.close(fig)
 
@@ -106,7 +106,7 @@ def plot_phase_vs_phase(phase_true, phase_pred, model, characteristics, path):
     phase = phase_true
     height = phase.shape[0]
     width = phase.shape[1]
-    x = np.linspace(0, np.size(phase), num=width, dtype=int)
+    x = np.linspace(0, width*64 , num=width, dtype=int)
     y = range(height)
     ax[0].pcolormesh(x, y, phase)
     ax[0].set_title('Phase true')
@@ -118,12 +118,12 @@ def plot_phase_vs_phase(phase_true, phase_pred, model, characteristics, path):
     phase = phase_pred
     height = phase.shape[0]
     width = phase.shape[1]
-    x = np.linspace(0, np.size(phase), num=width, dtype=int)
+    x = np.linspace(0, width*64 , num=width, dtype=int)
     y = range(height)
     ax[1].pcolormesh(x, y, phase)
     ax[1].set_title('Phase pred')
 
-    fig.suptitle(f'Model {model}: {characteristics[0]} {characteristics[1]} {characteristics[2]} L{characteristics[3]} M{characteristics[4]}')
+    fig.suptitle(f'Model {model}: {characteristics[0]}')
     plt.savefig(path)
     plt.close(fig)
 
@@ -140,7 +140,7 @@ def plot_wav_vs_wav(signal_true, signal_pred, model, characteristics, path):
     ax[1].plot(time_ax, signal_pred)
     ax[1].set_title('Wav pred')
 
-    fig.suptitle(f'Model {model}: {characteristics[0]} {characteristics[1]} {characteristics[2]} L{characteristics[3]} M{characteristics[4]}')
+    fig.suptitle(f'Model {model}: {characteristics[0]}')
     plt.savefig(path)
     plt.close(fig)
 

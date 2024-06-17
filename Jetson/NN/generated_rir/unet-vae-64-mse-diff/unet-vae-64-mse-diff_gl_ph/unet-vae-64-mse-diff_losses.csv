@@ -1,0 +1,2 @@
+room,n samples,MSE spectrogram,MSE magnitude,1-cos(y-y_) phase,MSE waveform,MSE waveform 50ms,Misalignment magnitude,Misalignment waveform,SDR,Similarity
+Small,6,0.1394,0.0086,0.0295,4.1123e-08,1.3404e-07,8.4721e+00,8.6278e-02,4.1123e-08,4.2731e-02

@@ -1,10 +1,6 @@
-# -*- coding: utf-8 -*-
 """
 DOA Algorithms
 ==============
-
-This example demonstrates how to use the DOA object to perform direction of arrival
-finding in 2D using one of several algorithms
 
 - MUSIC [1]_
 - SRP-PHAT [2]_
@@ -109,11 +105,13 @@ def main():
             sd.check_input_settings()
             sd.check_output_settings()
             print("Default input and output device: ", sd.default.device )
+            return None,None
 
         elif args.defaults == True:
             aa = np.load('_data/defaults.npy', allow_pickle = True).item()
             for i in aa:
                 print (i + " => " + str(aa[i]))
+            return None,None
 
         elif args.setdev == True:
 
@@ -125,6 +123,7 @@ def main():
             print("Default input and output device: ", sd.default.device )
             print("Sucessfully selected audio devices. Ready to record.")
             parse._defaults(args)
+            return None,None
 
         else:
         
@@ -136,15 +135,8 @@ def main():
             if args.record:
                 saverecordings(recorded, args.fs)
 
-            ######
-            # We define a meaningful distance measure on the circle
-            # Location of original source
-            #vec_dist = np.array(spk_pos, dtype=float)-np.array(mic_pos, dtype=float)
-            #azimuth = np.arctan2(vec_dist[1],vec_dist[0])
-            
             #######################
-            # algorithms parameters
-            SNR = 0.0  # signal-to-noise ratio
+            # Algorithms parameters
             c = 343.0  # speed of sound
             fs = args.fs  # sampling frequency
             nfft = 256  # FFT size
@@ -167,6 +159,7 @@ def main():
                 plt.subplot(1, X.shape[0], i+1,title="Spectrogram")
                 librosa.display.specshow(librosa.amplitude_to_db(np.abs(X[i,:,:])), sr=fs, hop_length=nfft//2, x_axis="time", y_axis="linear", cmap='jet')
             #plt.show()
+            
             ##############################################
             # Now we can test all the algorithms available
             algo_names = sorted(pra.doa.algorithms.keys())
@@ -179,19 +172,20 @@ def main():
                 azimuth = np.deg2rad(azimuth)
             
             for algo_name in algo_names:
-                # Construct the new DOA object
-                # the max_four parameter is necessary for FRIDA only
+
+                # The max_four parameter is necessary for FRIDA only
                 doa = pra.doa.algorithms[algo_name](R, fs, nfft, c=c, max_four=4)
         
-                # this call here perform localization on the frames in X
+                # This call here perform localization on the frames in X
                 doa.locate_sources(X, freq_bins=freq_bins)
+                
                 plt.subplot(1,len(algo_names),algo_names.index(algo_name)+1, title=algo_name)
                 plt.plot(doa.grid.values)
+                
                 algos.append(algo_name)
                 azimuth_recov.append(np.degrees(doa.azimuth_recon).astype(np.int16))
-                print(algo_name," : ",np.degrees(doa.azimuth_recon))
                 error.append(np.degrees(circ_dist(azimuth, doa.azimuth_recon)).astype(np.int16))
-                # doa.azimuth_recon contains the reconstructed location of the source
+                # DOA.azimuth_recon contains the reconstructed location of the source
             plt.show()
             azimuth_recov_flat = [item for sublist in azimuth_recov for item in sublist]
             error_flat = [item for sublist in error for item in sublist]
@@ -206,14 +200,10 @@ def main():
 
 if __name__=="__main__":
     distances = [0.25,0.5,1,2,4]
-    distances = [0.5]
     reps = 5
     
     filename = "DOA_algos.csv"
         
-    #user_input = input("Set the microphone coordinates: ")
-    #mic_pos = np.array([float(x) for x in user_input.split(',')])
-    
     for distance in distances:
         
         print("Computing distance ", distance)
@@ -225,10 +215,12 @@ if __name__=="__main__":
         
         for i in range(reps):
             print("Rep: ", i+1, " Change sound source position.")
-            #user_input = input("Coordiantes: ")
-            #spk_pos = np.array([float(x) for x in user_input.split(',')])
             algos, error = main()
-            #algos, error = main()
+            
+            if algos == None:
+                quit()
+            
+            # Asks if the measured DOA should be taken into account
             if (input("Keep? ")=="y"):
                 errors.append(np.array(error))
         
@@ -236,7 +228,7 @@ if __name__=="__main__":
         mean_errors = np.mean(errors,axis=0)
         
         data = {
-                "Algortithm" : algos,
+                "Algorithm" : algos,
                 "Error" : mean_errors
             }
             

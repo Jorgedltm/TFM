@@ -4,6 +4,7 @@ from visualize import *
 from scipy.signal import resample_poly
 import tensorflow as tf
 import librosa
+import torch
 
 class FeatureExtractor:
     def __init__(self, n_fft, win_length, hop_length):
@@ -13,12 +14,17 @@ class FeatureExtractor:
 
     def extract(self, waveform):
         # Convert the waveform to a spectrogram via a STFT.
-        '''with tf.device('/device:GPU:0'):
-            spectrogram = tf.signal.stft(waveform, fft_length=self.n_fft, frame_length=self.win_length, window_fn=tf.signal.hann_window,frame_step=self.hop_length)
-            spectrogram = spectrogram.numpy()
-            spectrogram = spectrogram.T
-        '''
-        spectrogram = librosa.stft(waveform, n_fft=self.n_fft, win_length=self.win_length, hop_length=self.hop_length)
+        waveform = torch.tensor(waveform, dtype=torch.float32).cuda()
+        window = torch.hann_window(self.win_length)
+        window = window.cuda()
+        
+        spectrogram = torch.stft(waveform,n_fft=self.n_fft,win_length=self.win_length,window=window,hop_length=self.hop_length,return_complex=True)
+        spectrogram = spectrogram.cpu()
+        #spectrogram = tf.signal.stft(waveform, fft_length=self.n_fft, frame_length=self.win_length, window_fn=tf.signal.hann_window,frame_step=self.hop_length)
+        spectrogram = spectrogram.numpy()
+        #spectrogram = spectrogram.T
+        
+        #spectrogram = librosa.stft(waveform, n_fft=self.n_fft, win_length=self.win_length, hop_length=self.hop_length)
         amp = np.abs(spectrogram)
         phase = np.angle(spectrogram)
         return amp, phase

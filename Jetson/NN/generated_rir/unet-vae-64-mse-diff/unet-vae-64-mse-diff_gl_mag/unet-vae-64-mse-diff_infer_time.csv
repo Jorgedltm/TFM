@@ -1,2 +1,6 @@
-n_samples,t_model_inference_avg,batch_size,t_postprocess,t_loss_calc,t_global
-6,0.14065,3,0.24911,0.02080,8.38926
+mode;n_samples;t_model_inference_avg;batch_size;t_postprocess;t_loss_calc;t_global
+TFTRT_FP16;7;0,00693;1;0,25297;0,01996;2,07206
+TFTRT_FP32;7;0,00723;1;0,27427;0,01921;2,18009
+Checkpoint;7;0,13622;1;0,24629;0,02083;2,87231
+TFTRT_FP16_1GB;7;0,0065;1;0,25622;0,02059;2,05858
+TF_FP32;7;0,01721;1;0,32014;0,01932;2,57105

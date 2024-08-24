@@ -5,6 +5,7 @@ import librosa
 import tensorflow as tf
 import numpy as np
 from scipy.io.wavfile import write
+import torch
 
 from preprocessv2 import Normalizer, TensorPadder
 
@@ -116,11 +117,17 @@ class PostProcess:
         """
         conv_stft = denorm_f * (np.cos(denorm_p) + 1j * np.sin(denorm_p))
         if self.algorithm == 'ph':
-            '''conv_stft = conv_stft.T
-            waveform = tf.signal.inverse_stft(conv_stft, fft_length=n_fft, frame_length=win_length,
-                                              window_fn=tf.signal.hann_window,frame_step=hop_length)
-            waveform = waveform.numpy()'''
-            waveform = librosa.istft(conv_stft, n_fft=n_fft, win_length=win_length, hop_length=hop_length)    
+            #conv_stft = conv_stft.T
+            conv_stft = torch.tensor(conv_stft, dtype=torch.complex64).cuda()
+            window = torch.hann_window(win_length)
+            window = window.cuda()
+            
+            waveform = torch.istft(conv_stft, n_fft=n_fft, hop_length=hop_length, win_length=win_length, window=window)
+            #waveform = tf.signal.inverse_stft(conv_stft, fft_length=n_fft, frame_length=win_length,
+            #                                  window_fn=tf.signal.hann_window,frame_step=hop_length)
+            waveform = waveform.cpu()
+            waveform = waveform.numpy()
+            #waveform = librosa.istft(conv_stft, n_fft=n_fft, win_length=win_length, hop_length=hop_length)    
         elif self.algorithm == 'gl_ph':
             waveform = librosa.griffinlim(conv_stft, n_iter=self.n_iters,
                                           n_fft=n_fft, win_length=win_length, hop_length=hop_length,

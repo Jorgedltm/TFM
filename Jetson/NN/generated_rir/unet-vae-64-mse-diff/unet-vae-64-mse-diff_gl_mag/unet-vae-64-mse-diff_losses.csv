@@ -1,2 +1,6 @@
-room,n samples,MSE spectrogram,MSE magnitude,1-cos(y-y_) phase,MSE waveform,MSE waveform 50ms,Misalignment magnitude,Misalignment waveform,SDR,Similarity
-Small,6,0.1394,0.0086,0.0295,4.8611e-08,1.4182e-07,8.4722e+00,8.8273e-01,4.8611e-08,1.4579e-01
+mode;room;n samples;MSE spectrogram;MSE magnitude;1-cos(y-y_) phase;MSE waveform;MSE waveform 50ms;Misalignment magnitude;Misalignment waveform;SDR;Similarity
+TFTRT_FP16;Small;7;0,8311;0,0004;0,0324;9,6099e-08;3,3408e-07;-4,5349;3,3336;9,6099e-08;0,23344
+TFTRT_FP32;Small;7;0,839;0,0004;0,0305;9,2751e-08;3,2071e-07;-4,6637;3,1216;9,2751e-08;0,23534
+Checkpoint;Small;7;0,8393;0,0004;0,0305;9,8232e-08;3,4304e-07;-4,6598;3,3117;9,8232e-08;0,23458
+TFTRT_FP16_1GB;Small;7;0,8314;0,0004;0,0322;9,4659e-08;3,2893e-07;-4,5365;3,2025;9,4659e-08;0,23564
+TF_FP32;Small;7;0,8393;0,0004;0,0305;1,0357e-07;3,6364e-07;-4,6597;3,4691;1,0357e-07;0,24092
